@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "fs": "^0.0.1-security",
-    "js-yaml": "^3.10.0"
+    "js-yaml": "^3.14.1"
   },
   "devDependencies": {
     "mocha": "^4.1.0",
