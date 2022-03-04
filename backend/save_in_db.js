@@ -54,13 +54,13 @@ function writeData_gps(data_gps, data_sens) {
 
     const influx= new Influx.InfluxDB({
         host: 'localhost',
-        database: 'db_all_tables',
+        database: 'dbForMeasurements',
         port:8086,
         schema: [
             {
                 measurement: 'gps',
                 fields: { 
-                    time_measure: Influx.FieldType.INTEGER,
+                    timeMeasure: Influx.FieldType.INTEGER,
                     longitude: Influx.FieldType.FLOAT, 
                     latitude: Influx.FieldType.FLOAT, 
                     altitude: Influx.FieldType.FLOAT, 
@@ -75,9 +75,9 @@ function writeData_gps(data_gps, data_sens) {
     .then(names=>{
        // console.log(names)
         console.log("checking database status");
-        if(!names.includes('db_all_tables')){
-            console.log("Had to create a new database named db_all_tables");
-            return influx.createDatabase('db_all_tables');
+        if(!names.includes('dbForMeasurements')){
+            console.log("Had to create a new database named dbForMeasurements");
+            return influx.createDatabase('dbForMeasurements');
         }else{
             console.log("We found the database")}
 
@@ -89,7 +89,7 @@ function writeData_gps(data_gps, data_sens) {
                 host: os.hostname()
             },
             fields: {
-                time_measure: toDate,
+                timeMeasure: toDate,
                 latitude: data_gps[0], 
                 longitude: data_gps[1], 
                 altitude: data_gps[2], 
@@ -115,21 +115,21 @@ function writeData_sensors(data) {
 
     const influx= new Influx.InfluxDB({
         host: 'localhost',
-        database: 'db_all_tables',
+        database: 'dbForMeasurements',
         port:8086,
         schema: [
             {
                 measurement: 'sensors',
                 fields: { 
-                    time_measure: Influx.FieldType.INTEGER,
+                    timeMeasure: Influx.FieldType.INTEGER,
                     temperature: Influx.FieldType.FLOAT, 
                     pressure: Influx.FieldType.FLOAT, 
-                    humidity: Influx.FieldType.FLOAT, 
-                    luminosity: Influx.FieldType.FLOAT, 
-                    wind_heading: Influx.FieldType.FLOAT, 
-                    wind_speed_avg: Influx.FieldType.FLOAT,
-                    wind_speed_max: Influx.FieldType.FLOAT, 
-                    wind_speed_min: Influx.FieldType.FLOAT 
+                    hygrometry: Influx.FieldType.FLOAT, 
+                    brightness: Influx.FieldType.FLOAT, 
+                    winddirection: Influx.FieldType.FLOAT, 
+                    windSpeedAvg: Influx.FieldType.FLOAT,
+                    windSpeedMax: Influx.FieldType.FLOAT, 
+                    windSpeedMin: Influx.FieldType.FLOAT 
 
                 }
                 , tags: [ 'host' ]
@@ -144,9 +144,9 @@ function writeData_sensors(data) {
     .then(names=>{
        // console.log(names)
         console.log("checking database status");
-        if(!names.includes('db_all_tables')){
-            console.log("Had to create a new database named v");
-            return influx.createDatabase('db_all_tables');
+        if(!names.includes('dbForMeasurements')){
+            console.log("Had to create a new database named dbForMeasurements");
+            return influx.createDatabase('dbForMeasurements');
         }else{
             console.log("We found the database")}
 
@@ -161,15 +161,15 @@ function writeData_sensors(data) {
             },
             
             fields: {
-                time_measure: toDate,
+                timeMeasure: toDate,
                 temperature: data.measure[0].value,
                 pressure: data.measure[1].value,
-                humidity: data.measure[2].value,
-                luminosity:data.measure[3].value, 
-                wind_heading: data.measure[4].value, 
-                wind_speed_avg: data.measure[5].value, 
-                wind_speed_max: data.measure[6].value, 
-                wind_speed_min: data.measure[7].value, 
+                hygrometry: data.measure[2].value,
+                brightness:data.measure[3].value, 
+                winddirection: data.measure[4].value, 
+                windSpeedAvg: data.measure[5].value, 
+                windSpeedMax: data.measure[6].value, 
+                windSpeedMin: data.measure[7].value, 
             }
         });
         influx.writePoints(datas).then(() => console.log("worked for sensors"), (e) => console.error(e));
@@ -188,14 +188,14 @@ function writeData_rain(data_rain, data_sens) {
 
     const influx= new Influx.InfluxDB({
         host: 'localhost',
-        database: 'db_all_tables',
+        database: 'dbForMeasurements',
         port:8086,
         schema: [
             {
                 measurement: 'rain',
                 fields: { 
-                    time_measure: Influx.FieldType.INTEGER,
-                    time_fall: Influx.FieldType.INTEGER
+                    timeMeasure: Influx.FieldType.INTEGER,
+                    timeFall: Influx.FieldType.INTEGER
                 }
                 , tags: [ 'host' ]
             }
@@ -209,9 +209,9 @@ function writeData_rain(data_rain, data_sens) {
     .then(names=>{
        // console.log(names)
         console.log("checking database status");
-        if(!names.includes('db_all_tables')){
-            console.log("Had to create a new database named db_all_tables");
-            return influx.createDatabase('db_all_tables');
+        if(!names.includes('dbForMeasurements')){
+            console.log("Had to create a new database named dbForMeasurements");
+            return influx.createDatabase('dbForMeasurements');
         }else{
             console.log("We found the database")}
 
@@ -225,8 +225,8 @@ function writeData_rain(data_rain, data_sens) {
                 host: os.hostname()
             },
             fields: {
-                time_measure: toDate,
-                time_fall: data_rain
+                timeMeasure: toDate,
+                timeFall: data_rain
             }
         });
         influx.writePoints(datas).then(() => console.log("worked for rain"), (e) => console.error(e));
