@@ -10,10 +10,14 @@ var usersRouter = require('./routes/users');
 var stationsRouter = require('./routes/stations');
 var dataRouter = require('./routes/data');
 
+
+
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
+
+
 app.engine('html', engines.mustache);
 app.set('view engine', 'html');
 
