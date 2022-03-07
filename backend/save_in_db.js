@@ -97,10 +97,7 @@ function writeData_gps(data_gps, data_sens) {
         });
         influx.writePoints(datas).then(() => console.log("worked for gps"), (e) => console.error(e));
 
-}
-
-    
-    
+}   
 function writeData_sensors(data) {
 
     const Influx = require('influx');
@@ -110,6 +107,7 @@ function writeData_sensors(data) {
 
     const app = express();
 
+    console.log(data.date)
     var toDate = Date.parse(data.date);
     console.log(toDate);
 
@@ -174,8 +172,6 @@ function writeData_sensors(data) {
         });
         influx.writePoints(datas).then(() => console.log("worked for sensors"), (e) => console.error(e));
 }
-
-
 function writeData_rain(data_rain, data_sens) {
 
     const Influx = require('influx');
@@ -233,15 +229,193 @@ function writeData_rain(data_rain, data_sens) {
 }
 
 
+
+function writeData(data_sensors, data_gps, data_rain) {
+
+    const Influx = require('influx');
+    const express = require('express');
+    const http = require('http');
+    const os = require('os');
+
+    const app = express();
+
+    var toDate = Date.parse(data_sensors.date);
+    console.log(toDate);
+
+    const influx= new Influx.InfluxDB({
+        host: 'localhost',
+        database: 'dbAllMeasurements',
+        port:8086,
+        schema: [
+            {
+                measurement: 'wind_heading',
+                fields: { 
+                    value: Influx.FieldType.FLOAT,
+                    date: Influx.FieldType.STRING
+                }
+                , tags: [ 'host' ]
+            },
+            {
+                measurement : 'wind', 
+                fields: { 
+                    wind_avg: Influx.FieldType.FLOAT,
+                    wind_min: Influx.FieldType.FLOAT,    
+                    wind_max: Influx.FieldType.FLOAT,
+                    date: Influx.FieldType.STRING
+                }, tags: [ 'host' ]
+            },
+            {
+                measurement : 'temperature', 
+                fields: { 
+                    value: Influx.FieldType.FLOAT,
+                    date: Influx.FieldType.STRING
+                }, tags: [ 'host' ]
+            },
+            {
+                measurement: 'pressure',
+                fields: { 
+                    value: Influx.FieldType.FLOAT,
+                    date: Influx.FieldType.STRING
+                }, tags: [ 'host' ]
+            },
+            {
+                measurement: 'luminosity',
+                fields: { 
+                    value: Influx.FieldType.FLOAT,
+                    date: Influx.FieldType.STRING
+                }, tags: [ 'host' ]
+            },
+            {
+                measurement: 'humidity',
+                fields: { 
+                    value: Influx.FieldType.FLOAT,
+                    date: Influx.FieldType.STRING
+                }, tags: [ 'host' ]
+            },
+            {
+                measurement: 'gpsposition',
+                fields: { 
+                    lat: Influx.FieldType.FLOAT,
+                    lon: Influx.FieldType.FLOAT,
+                    alt: Influx.FieldType.FLOAT,
+                    date: Influx.FieldType.STRING
+                }, tags: [ 'host' ]
+            },
+        ]
+    });
+
+    module.exports=influx;
+    influx.getDatabaseNames()
+    .then(names=>{
+        console.log("checking database status");
+        if(!names.includes('dbAllMeasurements')){
+            console.log("Had to create a new database named dbAllMeasurements");
+            return influx.createDatabase('dbAllMeasurements');
+        }else{
+            console.log("We found the database")}
+
+    });
+
+
+        const datas = [];
+
+        datas.push(
+            {
+                measurement: "wind_heading",
+                tags: {
+                    host: os.hostname()
+                },
+                fields: {
+                    value: data_sensors.measure[4].value,
+                    date: data_sensors.date
+            }
+            }, 
+            {
+                measurement: "wind",
+                tags: {
+                    host: os.hostname()
+                },
+                fields: {
+                    wind_avg: data_sensors.measure[5].value, 
+                    wind_min: data_sensors.measure[7].value, 
+                    wind_max: data_sensors.measure[6].value, 
+                    date: data_sensors.date
+            }
+            },
+            {
+                measurement: "temperature",
+                tags: {
+                    host: os.hostname()
+                },
+                fields: {
+                    value: data_sensors.measure[0].value,
+                    date: data_sensors.date
+            }
+            },
+            {
+                measurement: "pressure",
+                tags: {
+                    host: os.hostname()
+                },
+                fields: {
+                    value: data_sensors.measure[1].value,
+                    date: data_sensors.date
+            }
+            },
+            {
+                measurement: "luminosity",
+                tags: {
+                    host: os.hostname()
+                },
+                fields: {
+                    value: data_sensors.measure[3].value, 
+                    date: data_sensors.date
+            }
+            },
+            {
+                measurement: "humidity",
+                tags: {
+                    host: os.hostname()
+                },
+                fields: {
+                    value: data_sensors.measure[2].value,
+                    date: data_sensors.date
+            }
+            },
+            {
+                measurement: "gpsposition",
+                tags: {
+                    host: os.hostname()
+                },
+                fields: {
+                    lat: data_gps[0], 
+                    lon: data_gps[1], 
+                    alt: data_gps[2],      
+                    date: data_sensors.date
+            }
+            },
+        
+        );
+        influx.writePoints(datas).then(() => console.log("worked"), (e) => console.error(e));
+
+
+    }
+
+
+
+
+
+
 function main(){
 
     data_sensors = get_data_sensors();
     data_gps = get_data_gps();
     data_rain = get_data_rain();
+    writeData(data_sensors, data_gps, data_rain)
     
-    writeData_sensors(data_sensors);
-    writeData_gps(data_gps, data_sensors);
-    writeData_rain(data_rain, data_sensors);
+    // writeData_sensors(data_sensors);
+    // writeData_gps(data_gps, data_sensors);
+    // writeData_rain(data_rain, data_sensors);
     
     setTimeout(main, 30000);
 
