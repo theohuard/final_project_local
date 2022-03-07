@@ -1,6 +1,3 @@
-var express = require('express');
-var router = express.Router();
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
@@ -9,19 +6,22 @@ router.get('/', function(req, res, next) {
 module.exports = router;
 
 
+var express = require('express');
+var router = express.Router();
 
-const express = require("express");
-const app = express();
-const port = 3000;
-app.use(express.json());
-app.use(
-  express.urlencoded({
-    extended: true,
-  })
-);
-app.get("/", (req, res) => {
-  res.json({ message: "ok" });
-});
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
+/* GET home page. */
+// router.get('/', function (req, res, next) {
+//   // A modifier plus tard
+//   var stations = [{ id: 1, address: "" }]
+
+//   res.render('index.html', {
+//     title: 'DashBoard pour station météo',
+//     stations: {
+//       values: stations,
+//       li: getLiStations(stations),
+//       nb: stations.length
+//     }
+//   });
+// });
+
+// module.exports = router; 
