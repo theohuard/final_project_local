@@ -16,11 +16,12 @@ function createInflux(){
 
 
 
-/* GET data. */
+/* GET data for documentation */
 router.get('/', function(req, res, next) {
-  res.send('documentation API');
+    res.sendFile('public/documentation.html',{ root: __dirname+'/..'});
 });
 
+/* GET data for last available measure */
 
 router.get('/:measure', function(req, res, next) {
   var measure = req.params.measure;
@@ -33,11 +34,12 @@ router.get('/:measure', function(req, res, next) {
                 a[result.groupRows[i].name] = {};
                 a[result.groupRows[i].name].value = [result[i].lat, result[i].lon, result[i].alt];
                 a[result.groupRows[i].name].date = result[i].date;
-            } else if (result.groupRows[i].name == 'wind') {
+            } else if (result.groupRows[i].name == 'windvelocity') {
                 a[result.groupRows[i].name] = {};
                 a[result.groupRows[i].name].value = [result[i].wind_avg, result[i].wind_min, result[i].wind_max];
                 a[result.groupRows[i].name].date = result[i].date;
-            } else {
+            }
+             else {
                 a[result.groupRows[i].name] = {};
                 a[result.groupRows[i].name].value = [result[i].value];
                 a[result.groupRows[i].name].date = result[i].date;
@@ -71,7 +73,7 @@ router.get('/:measure/:date', function (req, res, next) {
                   a[a.length - 1][result.groupRows[i% list_measure.length].name] = {};
                   a[a.length - 1][result.groupRows[i% list_measure.length].name].value = [result[i% list_measure.length]% list_measure.length.lat, result[i% list_measure.length].lon, result[i% list_measure.length].alt];
                   a[a.length - 1][result.groupRows[i% list_measure.length].name].date = result[i% list_measure.length].date;
-              } else if (result.groupRows[i% list_measure.length].name == 'wind') {
+              } else if (result.groupRows[i% list_measure.length].name == 'windvelocity') {
                   a[a.length - 1][result.groupRows[i% list_measure.length].name] = {};
                   a[a.length - 1][result.groupRows[i% list_measure.length].name].value = [result[i% list_measure.length].wind_avg, result[i% list_measure.length].wind_min, result[i% list_measure.length].wind_max];
                   a[a.length - 1][result.groupRows[i% list_measure.length].name].date = result[i% list_measure.length].date;
@@ -99,7 +101,7 @@ router.get('/:measure/:date', function (req, res, next) {
                   a[a.length - 1][result.groupRows[i% list_measure.length].name] = {};
                   a[a.length - 1][result.groupRows[i% list_measure.length].name].value = [result[i% list_measure.length]% list_measure.length.lat, result[i% list_measure.length].lon, result[i% list_measure.length].alt];
                   a[a.length - 1][result.groupRows[i% list_measure.length].name].date = result[i% list_measure.length].date;
-              } else if (result.groupRows[i% list_measure.length].name == 'wind') {
+              } else if (result.groupRows[i% list_measure.length].name == 'windvelocity') {
                   a[a.length - 1][result.groupRows[i% list_measure.length].name] = {};
                   a[a.length - 1][result.groupRows[i% list_measure.length].name].value = [result[i% list_measure.length].wind_avg, result[i% list_measure.length].wind_min, result[i% list_measure.length].wind_max];
                   a[a.length - 1][result.groupRows[i% list_measure.length].name].date = result[i% list_measure.length].date;
