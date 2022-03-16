@@ -34,8 +34,10 @@ cd app_API
 DEBUG=app_API:* npm start
 ```
 * To access the data, follow the following pattern:
-localhost:3000/data/name_of_measurements_needed/dates_start, date_end
 
+```bash
+localhost:3000/data/name_of_measurements_needed/dates_start, date_end
+```
 
 
 
