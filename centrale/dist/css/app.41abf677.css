@@ -1,1 +1,0 @@
-#dashboard{width:33vw}td{text-align:right}th{text-align:left}#history,#loading{width:50vw}#loading{z-index:10000;background-color:rgba(0,0,0,.05);display:flex;flex-direction:column;justify-content:center}#loading img{width:50px}canvas{height:25vh}#comparative{width:20vw}#mapping{width:70vw}
